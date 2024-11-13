@@ -3,6 +3,7 @@ package org.example.healthcare_management_v2.service;
 import org.example.healthcare_management_v2.dto.appointmentDto.AppointmentDto;
 import org.example.healthcare_management_v2.dto.appointmentDto.AppointmentX;
 import org.example.healthcare_management_v2.entities.Appointment;
+import org.example.healthcare_management_v2.enums.AppointmentsStatus;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.lang.NonNull;
@@ -24,5 +25,5 @@ public interface AppointmentService {
 
 
     // Truy vấn để lấy danh sách Appointment của một Doctor với phân trang
-    Page<AppointmentX> findAppointmentsByDoctorUsername(String username, Pageable pageable);
+    Page<AppointmentX> findAppointmentsByDoctorUsername(String username, String status, Pageable pageable);
 }

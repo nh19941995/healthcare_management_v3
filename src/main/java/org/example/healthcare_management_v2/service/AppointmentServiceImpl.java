@@ -99,8 +99,11 @@ public class AppointmentServiceImpl implements AppointmentService {
     }
 
     @Override
-    public Page<AppointmentX> findAppointmentsByDoctorUsername(String username, Pageable pageable) {
-        return appointmentRepository.findAppointmentsByDoctorUsername(username, pageable)
+    public Page<AppointmentX> findAppointmentsByDoctorUsername(
+            String username, String status, Pageable pageable
+    ) {
+        AppointmentsStatus appointmentStatus = AppointmentsStatus.valueOf(status);
+        return appointmentRepository.findAppointmentsByDoctorUsername(username,appointmentStatus, pageable)
                 .map(appointmentMapper::appointmentToAppointmentX);
     }
 

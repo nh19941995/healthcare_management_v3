@@ -1,11 +1,13 @@
 package org.example.healthcare_management_v2.controller;
 
+import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
 import org.example.healthcare_management_v2.dto.appointmentDto.AppointmentDto;
 import org.example.healthcare_management_v2.dto.appointmentDto.AppointmentX;
 import org.example.healthcare_management_v2.dto.doctorDto.DoctorProfileDto;
 import org.example.healthcare_management_v2.dto.doctorDto.Doctor_1;
 import org.example.healthcare_management_v2.dto.doctorDto.UpdateDoctorDto;
+import org.example.healthcare_management_v2.enums.AppointmentsStatus;
 import org.example.healthcare_management_v2.repositories.DoctorRepo;
 import org.example.healthcare_management_v2.service.AppointmentService;
 import org.example.healthcare_management_v2.service.DoctorService;
@@ -22,7 +24,6 @@ import org.springframework.web.bind.annotation.*;
 @AllArgsConstructor
 public class DoctorController {
     private final DoctorService doctorService;
-    private final DoctorRepo doctorRepo;
     private final AppointmentService appointmentService;
 
     // cập nhật thông tin bác sĩ
@@ -60,17 +61,26 @@ public class DoctorController {
         return ResponseEntity.ok(doctorService.findAll(pageable));
     }
 
+    // PENDING,    // đang chờ
+    //    CONFIRMED,  // đã xác nhận
+    //    COMPLETED,  // đã hoàn thành
+    //    CANCELLED,  // đã hủy
+    //    NO_SHOW,    // không đến
+    //    RESCHEDULED;
 
     // lay danh sach lich kham cua bac si
-    // url: localhost:8080/api/doctors/appointments/username
-    @GetMapping("/appointments/{username}")
+    // url: localhost:8080/api/doctors/appointments/username/PENDING?page=0&size=10
+    @GetMapping("/appointments/{username}/{status}")
     public ResponseEntity<Page<AppointmentX>> getAppointments(
             @PathVariable String username,
+            @PathVariable @Pattern(
+                    regexp = "^(PENDING|CONFIRMED|COMPLETED|CANCELLED|NO_SHOW|RESCHEDULED)$"
+                    , message = "Invalid role name") String status,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size
     ) {
         Pageable pageable = PageRequest.of(page, size);
-        return ResponseEntity.ok(appointmentService.findAppointmentsByDoctorUsername(username,pageable));
+        return ResponseEntity.ok(appointmentService.findAppointmentsByDoctorUsername(username,status,pageable));
     }
 
 

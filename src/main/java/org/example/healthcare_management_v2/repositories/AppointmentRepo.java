@@ -4,6 +4,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import org.example.healthcare_management_v2.entities.Appointment;
 import org.example.healthcare_management_v2.enums.AppointmentsStatus;
+import org.example.healthcare_management_v2.enums.Status;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -43,8 +44,8 @@ public interface AppointmentRepo extends JpaRepository<Appointment, Long> {
     );
 
     // Truy vấn để lấy danh sách Appointment của một Doctor bằng username với phân trang
-    @Query("SELECT a FROM Appointment a WHERE a.doctor.user.username = :username")
-    Page<Appointment> findAppointmentsByDoctorUsername(String username, Pageable pageable);
+    @Query("SELECT a FROM Appointment a WHERE a.doctor.user.username = :username and a.status = :status")
+    Page<Appointment> findAppointmentsByDoctorUsername(String username, AppointmentsStatus status, Pageable pageable);
 
 
 }
