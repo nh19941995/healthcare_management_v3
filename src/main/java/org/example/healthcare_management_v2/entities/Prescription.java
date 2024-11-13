@@ -23,7 +23,7 @@ import java.util.Set;
 public class Prescription {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private Long id;
 
     @Column(name = "medical_diagnosis", columnDefinition = "TEXT")
     private String medicalDiagnosis;

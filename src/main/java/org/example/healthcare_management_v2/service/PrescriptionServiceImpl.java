@@ -9,6 +9,7 @@ import org.example.healthcare_management_v2.entities.Prescription;
 import org.example.healthcare_management_v2.entities.PrescriptionMedication;
 import org.example.healthcare_management_v2.exceptions.BusinessException;
 import org.example.healthcare_management_v2.exceptions.ResourceNotFoundException;
+import org.example.healthcare_management_v2.map.PrescriptionMapper;
 import org.example.healthcare_management_v2.repositories.AppointmentRepo;
 import org.example.healthcare_management_v2.repositories.MedicationRepo;
 import org.example.healthcare_management_v2.repositories.PrescriptionMedicationRepo;
@@ -31,6 +32,7 @@ public class PrescriptionServiceImpl implements PrescriptionService {
     private final PrescriptionMedicationRepo prescriptionMedicationRepository;
     private final MedicationRepo medicationRepo;
     private final PrescriptionRepo prescriptionRepository;
+    private final PrescriptionMapper prescriptionMapper;
 
     @Override
     @Transactional
@@ -53,6 +55,24 @@ public class PrescriptionServiceImpl implements PrescriptionService {
         // lưu danh sách thuốc trong đơn thuốc
         prescriptionMedicationRepository.saveAll(prescriptionMedications);
     }
+
+
+
+    @Override
+    public PrescriptionDto getPrescriptionByAppointmentId(Long appointmentId) {
+        // goi ra cuoc hen
+        Appointment appointment = appointmentRepository.findById(appointmentId)
+                .orElseThrow(() -> new ResourceNotFoundException("Appointment", "id", appointmentId));
+        // kiểm tra quyền truy cập cuôc hẹn
+        verifyPrescriptionAccessPermission(appointment);
+        // lấy thông tin đơn thuốc
+        Prescription prescription = appointment.getPrescription();
+        // chuyển đổi thông tin đơn thuốc sang định dạng DTO
+        return prescriptionMapper.prescriptionToPrescriptionDto(prescription);
+    }
+
+
+
 
     // kiểm tra quyền tạo đơn thuốc
     private void verifyPrescriptionCreationPermission(Appointment appointment) {
@@ -104,5 +124,23 @@ public class PrescriptionServiceImpl implements PrescriptionService {
                 .individualizedDosage(medicationDto.getIndividualizedDosage())
                 .note(medicationDto.getNote())
                 .build();
+    }
+
+    // kiểm tra quyền truy cập đơn thuốc
+    private void verifyPrescriptionAccessPermission(Appointment appointment) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String currentUsername = authentication.getName();
+        boolean isAdmin = authentication.getAuthorities().stream()
+                .anyMatch(authority -> authority.getAuthority().equals("ROLE_ADMIN"));
+        // chỉ bác sĩ hoặc quản trị viên hoặc bệnh nhân mới có thể truy cập đơn thuốc
+        if (
+                // bác sĩ cuộc hẹn
+                !appointment.getDoctor().getUser().getUsername().equals(currentUsername)
+                // bệnh nhân cuộc hẹn
+                && !appointment.getPatient().getUser().getUsername().equals(currentUsername)
+                // quản trị viên
+                && !isAdmin) {
+            throw new AccessDeniedException("Insufficient permissions to access prescription for this appointment");
+        }
     }
 }

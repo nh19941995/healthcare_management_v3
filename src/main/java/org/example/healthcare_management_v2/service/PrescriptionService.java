@@ -4,4 +4,6 @@ import org.example.healthcare_management_v2.dto.prescriptionDto.PrescriptionDto;
 
 public interface PrescriptionService {
     void createPrescription(PrescriptionDto prescriptionDto);
+
+    PrescriptionDto getPrescriptionByAppointmentId(Long appointmentId);
 }

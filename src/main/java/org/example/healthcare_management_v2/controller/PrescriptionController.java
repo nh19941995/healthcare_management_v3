@@ -21,10 +21,18 @@ public class PrescriptionController {
     ) {
         prescriptionService.createPrescription(prescriptionDto);
 
-
-
         return ResponseEntity.ok(
                 new ApiResponse(true, "Prescription created successfully!")
         );
+    }
+
+    // lấy thông tin đơn thuốc theo id của cuộc hẹn
+    // url http://localhost:8080/api/prescriptions/appointment/{appointment_id}
+    @GetMapping("/appointment/{appointment_id}")
+    public ResponseEntity<PrescriptionDto> getPrescriptionByAppointmentId(
+            @PathVariable Long appointment_id
+    ) {
+        PrescriptionDto prescriptionDto = prescriptionService.getPrescriptionByAppointmentId(appointment_id);
+        return ResponseEntity.ok(prescriptionDto);
     }
 }
