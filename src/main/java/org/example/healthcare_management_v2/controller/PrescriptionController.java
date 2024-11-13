@@ -20,6 +20,9 @@ public class PrescriptionController {
             @RequestBody PrescriptionDto prescriptionDto
     ) {
         prescriptionService.createPrescription(prescriptionDto);
+
+
+
         return ResponseEntity.ok(
                 new ApiResponse(true, "Prescription created successfully!")
         );
