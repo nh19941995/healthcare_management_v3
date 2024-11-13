@@ -61,13 +61,6 @@ public class DoctorController {
         return ResponseEntity.ok(doctorService.findAll(pageable));
     }
 
-    // PENDING,    // đang chờ
-    //    CONFIRMED,  // đã xác nhận
-    //    COMPLETED,  // đã hoàn thành
-    //    CANCELLED,  // đã hủy
-    //    NO_SHOW,    // không đến
-    //    RESCHEDULED;
-
     // lay danh sach lich kham cua bac si
     // url: localhost:8080/api/doctors/appointments/username/PENDING?page=0&size=10
     @GetMapping("/appointments/{username}/{status}")
@@ -83,14 +76,4 @@ public class DoctorController {
         return ResponseEntity.ok(appointmentService.findAppointmentsByDoctorUsername(username,status,pageable));
     }
 
-
-    // tạo đơn thuốc
-    // url: localhost:8080/api/doctors/AppointmentId/prescription
-//    @PostMapping("/prescription")
-//    public ResponseEntity<String> createPrescription(
-//            @RequestBody PrescriptionDto prescriptionDto
-//    ) {
-//        doctorService.createPrescription(prescriptionDto);
-//        return ResponseEntity.ok("Prescription created successfully");
-//    }
 }
