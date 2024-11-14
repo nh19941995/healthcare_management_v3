@@ -76,7 +76,7 @@ public class AdminController {
             @RequestParam(defaultValue = "10") int size,
             @PathVariable @Pattern(
                     regexp = "^(PENDING|CONFIRMED|COMPLETED|CANCELLED|NO_SHOW|RESCHEDULED|ALL)$"
-                    , message = "Invalid role name") String status
+                    , message = "Invalid status name") String status
     ) {
         Pageable pageable = PageRequest.of(page, size);
         return ResponseEntity.ok(appointmentService.findAllAppointment(pageable, status));
