@@ -38,6 +38,7 @@ public class DoctorServiceImpl implements DoctorService {
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
         Doctor existingDoctor = user.getDoctor();
+
         if (existingDoctor != null) {
             existingDoctor.setAchievements(doctorDto.getAchievements());
             existingDoctor.setMedicalTraining(doctorDto.getMedicalTraining());
