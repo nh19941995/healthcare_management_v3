@@ -55,7 +55,6 @@ public class DoctorServiceImpl implements DoctorService {
                         .orElseThrow(() -> new RuntimeException("Specialization not found")));
             }
 
-            user.setAvatar(doctorDto.getAvatar());
             user.setFullName(doctorDto.getFullName());
             user.setPhone(doctorDto.getPhone());
             user.setEmail(doctorDto.getEmail());
