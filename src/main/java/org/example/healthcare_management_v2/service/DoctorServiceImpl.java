@@ -27,6 +27,7 @@ public class DoctorServiceImpl implements DoctorService {
     private final UserRepo userRepository;
     private final ClinicRepo clinicRepository;
     private final SpecializationRepo specializationRepository;
+
     private final DoctorRepo doctorRepository;
     private final DoctorMapper doctorMapper;
     private final RoleService roleService;
