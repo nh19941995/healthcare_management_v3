@@ -26,4 +26,7 @@ public interface AppointmentService {
 
     // Truy vấn để lấy danh sách Appointment của một Doctor với phân trang
     Page<AppointmentX> findAppointmentsByDoctorUsername(String username, String status, Pageable pageable);
+
+    // Truy vấn để lấy danh sách toàn bộ Appointment
+    Page<AppointmentX> findAllAppointment(Pageable pageable,String status);
 }

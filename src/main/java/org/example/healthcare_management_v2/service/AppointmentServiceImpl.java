@@ -107,4 +107,16 @@ public class AppointmentServiceImpl implements AppointmentService {
                 .map(appointmentMapper::appointmentToAppointmentX);
     }
 
+    @Override
+    public Page<AppointmentX> findAllAppointment(Pageable pageable, String status) {
+        if (status.equals("ALL") ) {
+            return appointmentRepository.findAll(pageable)
+                    .map(appointmentMapper::appointmentToAppointmentX);
+        }else {
+            AppointmentsStatus appointmentStatus = AppointmentsStatus.valueOf(status);
+            return appointmentRepository.findAllByStatus(appointmentStatus, pageable)
+                    .map(appointmentMapper::appointmentToAppointmentX);
+        }
+    }
+
 }

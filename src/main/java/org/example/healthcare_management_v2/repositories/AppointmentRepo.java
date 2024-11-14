@@ -2,9 +2,9 @@ package org.example.healthcare_management_v2.repositories;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
+import lombok.NonNull;
 import org.example.healthcare_management_v2.entities.Appointment;
 import org.example.healthcare_management_v2.enums.AppointmentsStatus;
-import org.example.healthcare_management_v2.enums.Status;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;

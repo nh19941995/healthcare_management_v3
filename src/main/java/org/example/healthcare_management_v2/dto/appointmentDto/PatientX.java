@@ -16,5 +16,4 @@ public class PatientX {
     private String address;
     private String avatar;
     private Gender gender;
-
 }

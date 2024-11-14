@@ -2,8 +2,10 @@ package org.example.healthcare_management_v2.controller;
 
 import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
+import org.example.healthcare_management_v2.dto.appointmentDto.AppointmentX;
 import org.example.healthcare_management_v2.dto.auth.ApiResponse;
 import org.example.healthcare_management_v2.dto.userDto.UserWithDoctorDto;
+import org.example.healthcare_management_v2.service.AppointmentService;
 import org.example.healthcare_management_v2.service.UserService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -17,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/admin")
 public class AdminController {
     private final UserService userService;
+    private final AppointmentService appointmentService;
 
     // nâng cấp role cho user
     // url: localhost:8080/admin/updateRole/ababab@A111/ADMIN
@@ -63,6 +66,20 @@ public class AdminController {
     ) {
         userService.blockOrUnblock(username, reason);
         return ResponseEntity.ok(new ApiResponse(true, "User blocked successfully!"));
+    }
+
+    // xem toan bo cac cuoc hen cua tat ca cac bac si
+    // url: localhost:8080/admin/appointments/PENDING?page=0&size=10
+    @GetMapping("/appointments/{status}")
+    public ResponseEntity<Page<AppointmentX>> getAppointments(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @PathVariable @Pattern(
+                    regexp = "^(PENDING|CONFIRMED|COMPLETED|CANCELLED|NO_SHOW|RESCHEDULED|ALL)$"
+                    , message = "Invalid role name") String status
+    ) {
+        Pageable pageable = PageRequest.of(page, size);
+        return ResponseEntity.ok(appointmentService.findAllAppointment(pageable, status));
     }
 
 }
