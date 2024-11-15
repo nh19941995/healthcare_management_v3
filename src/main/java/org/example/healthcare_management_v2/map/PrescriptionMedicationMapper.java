@@ -16,6 +16,5 @@ public interface PrescriptionMedicationMapper {
 
     PrescriptionMedication mapToEntity(PrescriptionMedicationDto prescriptionMedicationDto);
 
-    @Mapping(target = "medicationId", source = "medication.id")
     PrescriptionMedicationDto mapToDto(PrescriptionMedication prescriptionMedication);
 }

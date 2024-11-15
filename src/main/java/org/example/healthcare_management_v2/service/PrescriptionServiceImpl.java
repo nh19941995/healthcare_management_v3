@@ -113,9 +113,9 @@ public class PrescriptionServiceImpl implements PrescriptionService {
     // tạo thông tin thuốc trong đơn thuốc
     private PrescriptionMedication createPrescriptionMedication(
             PrescriptionMedicationDto medicationDto, Prescription prescription) {
-        Medication medication = medicationRepo.findById(medicationDto.getMedicationId())
+        Medication medication = medicationRepo.findById(medicationDto.getMedication().getId())
                 .orElseThrow(() -> new ResourceNotFoundException(
-                        "Medication", "id", medicationDto.getMedicationId())
+                        "Medication", "id", medicationDto.getMedication().getId())
                 );
 
         return PrescriptionMedication.builder()
