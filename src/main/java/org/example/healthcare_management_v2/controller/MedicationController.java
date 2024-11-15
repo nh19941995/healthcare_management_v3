@@ -30,4 +30,6 @@ public class MedicationController {
         return ResponseEntity.ok(medicationService.findAll(pageable));
     }
 
+    // tìm kiếm thuốc theo tên
+
 }

@@ -13,6 +13,7 @@ import org.example.healthcare_management_v2.enums.Gender;
 public class DoctorProfileDto {
     private Long userId;
     private Long doctorId;
+    private String username;
     private String achievements;
     private String medicalTraining;
     private ClinicDtoNoDoctor clinic;

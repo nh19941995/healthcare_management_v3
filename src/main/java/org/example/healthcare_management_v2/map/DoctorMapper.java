@@ -31,6 +31,7 @@ public interface DoctorMapper {
         @Mapping(target = "description", source = "user.description")
         @Mapping(target = "userId", source = "user.id")
         @Mapping(target = "doctorId", source = "id")
+        @Mapping(target = "username", source = "user.username")
         DoctorProfileDto doctorToDoctorProfileDto(Doctor doctor);
 
         @Mapping(target = "fullName", source = "user.fullName")
