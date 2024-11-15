@@ -22,6 +22,8 @@ public interface DoctorMapper {
 
         DoctorNoUserDto doctorToDoctorNoUserDto(Doctor doctor);
 
+
+
         @Mapping(target = "fullName", source = "user.fullName")
         @Mapping(target = "email", source = "user.email")
         @Mapping(target = "address", source = "user.address")
