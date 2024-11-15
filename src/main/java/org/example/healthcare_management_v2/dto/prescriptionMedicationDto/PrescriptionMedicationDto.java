@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class PrescriptionMedicationDto {
     private Long medicationId; // thông tin thuốc
-    private Long individualizedDosage; // liều lượng cá nhân
+    private String totalDosage; // tổng liều lượng
     private String note; // ghi chú khi sử dụng thuốc
+    private String dosageInstructions; // hướng dẫn liều dùng
 }

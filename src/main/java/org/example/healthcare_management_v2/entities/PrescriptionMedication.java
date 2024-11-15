@@ -29,8 +29,11 @@ public class PrescriptionMedication {
     @JoinColumn(name = "medication_id", nullable = false)
     private Medication medication; // thông tin thuốc
 
-    @Column(name = "individualized_dosage", nullable = false)
-    private Long individualizedDosage; // liều lượng cá nhân
+    @Column(name = "total_dosage", nullable = false)
+    private String totalDosage ; // tổng liều lượng
+
+    @Column(name = "dosage_instructions")
+    private String dosageInstructions; // hướng dẫn liều dùng.
 
     @Column(name = "note")
     private String note;

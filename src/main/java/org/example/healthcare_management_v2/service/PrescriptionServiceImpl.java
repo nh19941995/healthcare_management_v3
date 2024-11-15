@@ -121,7 +121,8 @@ public class PrescriptionServiceImpl implements PrescriptionService {
         return PrescriptionMedication.builder()
                 .prescription(prescription)
                 .medication(medication)
-                .individualizedDosage(medicationDto.getIndividualizedDosage())
+                .totalDosage(medicationDto.getTotalDosage())
+                .dosageInstructions(medicationDto.getDosageInstructions())
                 .note(medicationDto.getNote())
                 .build();
     }

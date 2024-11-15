@@ -29,7 +29,6 @@ public class DataInitializer {
     private final SpecializationRepo specializationrepo;
     private final PasswordEncoder passwordEncoder;
     private final ConsultationRepo consultationRepo;
-    private final PatientRepo patientRepo;
     private final MedicationRepo medicationRepo;
 
     @PostConstruct
