@@ -71,18 +71,4 @@ public class Patient {
     @JoinColumn(name = "status_id")
     private PatientStatus status;
 
-
-
-
-//    // Helper methods for Booking (OneToMany)
-//    public void addAppointments(Appointment appointment) {
-//        this.appointments.add(appointment);
-//        appointment.setPatient(this);
-//    }
-//
-//    public void removeAppointments(Appointment appointment) {
-//        this.appointments.remove(appointment);
-//        appointment.setPatient(null);
-//    }
-
 }

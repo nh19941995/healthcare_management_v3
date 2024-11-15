@@ -20,7 +20,7 @@ public class Doctor_1 {
     private String email;
     private String address;
     private String phone;
-//    private String avatar;
+    private String avatar;
     private Gender gender;
     private String description;
 }

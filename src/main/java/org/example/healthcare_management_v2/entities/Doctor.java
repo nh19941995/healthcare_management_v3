@@ -1,7 +1,6 @@
 package org.example.healthcare_management_v2.entities;
 
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 import org.example.healthcare_management_v2.enums.Status;

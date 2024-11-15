@@ -40,7 +40,7 @@ public interface DoctorMapper {
         @Mapping(target = "email", source = "user.email")
         @Mapping(target = "address", source = "user.address")
         @Mapping(target = "phone", source = "user.phone")
-//        @Mapping(target = "avatar", source = "user.username", qualifiedByName = "getAvatarForDoctor")
+        @Mapping(target = "avatar", source = "user.username", qualifiedByName = "getAvatarForDoctor")
         @Mapping(target = "gender", source = "user.gender")
         @Mapping(target = "description", source = "user.description")
         @Mapping(target = "userId", source = "user.id")
