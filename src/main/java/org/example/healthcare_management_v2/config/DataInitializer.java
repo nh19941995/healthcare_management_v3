@@ -159,7 +159,7 @@ public class DataInitializer {
 
             Clinic clinic2 = Clinic.builder()
                     .name("Bệnh viện Việt Đức")
-                    .address("Số 40, Tràng Tiền, Ho��n Kiếm, Hà Nội")
+                    .address("Số 40, Tràng Tiền, Hoàn Kiếm, Hà Nội")
                     .description("Bệnh viện Việt Đức là một trong những bệnh viện hàng đầu tại Hà Nội")
                     .image("https://anhgaixinh.vn/wp-content/uploads/2023/02/gai-mac-do-gym-1-1.jpg")
                     .phone("024 3826 4135")
