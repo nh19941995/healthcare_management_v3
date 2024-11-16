@@ -46,7 +46,6 @@ public interface DoctorMapper {
         @Mapping(target = "userId", source = "user.id")
         @Mapping(target = "doctorId", source = "id")
         @Mapping(target = "clinicId", source = "clinic.id")
-        @Mapping(target = "specializationId", source = "specialization.id")
         Doctor_1 doctorToDoctor_1(Doctor doctor);
 
         @Mapping(target = "doctorId", source = "id")
