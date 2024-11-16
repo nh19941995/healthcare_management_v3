@@ -58,13 +58,7 @@ public class Patient {
 
     @ToString.Exclude
     @ManyToOne(
-            fetch = FetchType.LAZY,
-            cascade = {
-                    CascadeType.PERSIST,
-                    CascadeType.MERGE,
-                    CascadeType.REFRESH,
-                    CascadeType.DETACH
-            }
+            fetch = FetchType.LAZY
     )
     // tên cột chứa khóa phụ trong bảng user là status_id
     // cột phụ role_id sẽ dc thêm vào bảng user

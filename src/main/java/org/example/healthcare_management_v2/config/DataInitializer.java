@@ -4,6 +4,8 @@ import jakarta.annotation.PostConstruct;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
+import org.example.healthcare_management_v2.config.dto_config.DoctorInfoDTO;
+import org.example.healthcare_management_v2.config.dto_config.UserCreationDTO;
 import org.example.healthcare_management_v2.entities.*;
 
 import org.example.healthcare_management_v2.enums.EnumRole;
@@ -14,8 +16,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalTime;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 @Component
 @AllArgsConstructor
@@ -30,6 +31,8 @@ public class DataInitializer {
     private final PasswordEncoder passwordEncoder;
     private final ConsultationRepo consultationRepo;
     private final MedicationRepo medicationRepo;
+    private final PatientRepo patientRepo;
+    private final DataSetupService dataSetupService;
 
     @PostConstruct
     @Transactional
@@ -177,193 +180,215 @@ public class DataInitializer {
         }
 
         if (userRepo.count() == 0 && roleRepo.count() > 0) {
-            Set<Role> roles = new HashSet<>();
-            Role adminRole = roleRepo.findByName(
-                    EnumRole.ADMIN.getRoleName()
-            ).orElseThrow(() -> new EntityNotFoundException("Role not found"));
 
-            Role doctorRole = roleRepo.findByName(
-                    EnumRole.DOCTOR.getRoleName()
-            ).orElseThrow(() -> new EntityNotFoundException("Role not found"));
-
-            Role patientRole = roleRepo.findByName(
-                    EnumRole.PATIENT.getRoleName()
-            ).orElseThrow(() -> new EntityNotFoundException("Role not found"));
-
-            roles.add(adminRole);
-            roles.add(doctorRole);
-            roles.add(patientRole);
-
-            // Admin
-            User admin = User.builder()
+            // tạo user cho admin có mọi quyền
+            UserCreationDTO adminDTO = UserCreationDTO.builder()
                     .fullName("Nguyễn Trung Hiếu")
                     .description("Admin")
                     .username("godOfJava@999")
-                    .password(passwordEncoder.encode("godOfJava@999"))
+                    .password("godOfJava@999")
                     .email("godOfJava@gmail.com")
                     .address("Trái Đất")
                     .phone("0773307333")
                     .gender(Gender.MALE)
                     .avatar("https://photo.znews.vn/w1920/Uploaded/rotnba/2024_03_03/Snapinsta.app_431047292_18331084978106327_9041942873238468114_n_1080.jpg")
                     .status(Status.ACTIVE)
+                    .roleTypes(Arrays.asList(
+                            EnumRole.ADMIN, EnumRole.DOCTOR,
+                            EnumRole.PATIENT, EnumRole.RECEPTIONIST
+                    ))
+                    .doctorInfo(DoctorInfoDTO.builder()
+                            .specializationId(1L)
+                            .clinicId(1L)
+                            .achievements("Đã có nhiều năm kinh nghiệm")
+                            .medicalTraining("Đại học Y Hà Nội")
+                            .build())
+                    .createPatient(true)
                     .build();
-            admin.setRoles(roles);
-            userRepo.save(admin);
+            dataSetupService.createUserWithRoles(adminDTO);
 
-            // lấy ra user vừa tạo
-            User userAdmin = userRepo.findByUsername("godOfJava@999")
-                    .orElseThrow(() -> new EntityNotFoundException("User not found"));
-            // lấy ra status patient
-            PatientStatus status_1 = patientStatusrepo.findById(1L)
-                    .orElseThrow(() -> new EntityNotFoundException("Patient status not found"));
-            // tạo patient
-            Patient patient_1 = Patient.builder()
-                    .user(userAdmin)
-                    .status(status_1)
-                    .build();
-            // Gán patient cho user
-            userAdmin.setPatient(patient_1);
-            // Lưu User, vì điều này sẽ tự động lưu cả Patient nhờ cascade (nếu cascade đã được thiết lập)
-            userRepo.save(userAdmin);
-
-
-
-
-            // patient
-            User user = User.builder()
-                    .fullName("Obama")
-                    .username("ababab@A111")
-                    .description("Patient")
-                    .password(passwordEncoder.encode("ababab@A111"))
-                    .email("abama@gmail.com")
-                    .address("Trái Đất")
-                    .phone("0273307333")
-                    .avatar("https://images.pexels.com/photos/3622619/pexels-photo-3622619.jpeg")
+            // tạo lễ tân
+            UserCreationDTO receptionist_1 = UserCreationDTO.builder()
+                    .fullName("Phạm Văn C")
+                    .description("Receptionist")
+                    .username("receptionistC@999")
+                    .password("receptionistC@999")
+                    .email("receptionist_c@gmail.com")
+                    .address("Đà Nẵng")
+                    .phone("3333333333")
                     .gender(Gender.MALE)
+                    .avatar("https://example.com/avatar3.jpg")
                     .status(Status.ACTIVE)
+                    .roleTypes(Arrays.asList(
+                            EnumRole.RECEPTIONIST,
+                            EnumRole.PATIENT
+                    ))
+                    .createPatient(true)
                     .build();
-            Set<Role> rolesUser = new HashSet<>();
-            rolesUser.add(patientRole);
-            user.setRoles(rolesUser);
-            userRepo.save(user);
-            // lấy ra user vừa tạo
-            User user1 = userRepo.findByUsername("ababab@A111")
-                    .orElseThrow(() -> new EntityNotFoundException("User not found"));
-            // lấy ra status patient
-            PatientStatus status = patientStatusrepo.findById(1L)
-                    .orElseThrow(() -> new EntityNotFoundException("Patient status not found"));
-            // tạo patient
-            Patient patient = Patient.builder()
-                    .user(user1)
-                    .status(status)
-                    .build();
-            // Gán patient cho user
-            user1.setPatient(patient);
-            // Lưu User, vì điều này sẽ tự động lưu cả Patient nhờ cascade (nếu cascade đã được thiết lập)
-            userRepo.save(user1);
+            dataSetupService.createUserWithRoles(receptionist_1);
 
+            // tạo user cho doctor có quyền doctor và patient
+            List<UserCreationDTO> doctors = Arrays.asList(
+                    UserCreationDTO.builder()
+                            .fullName("Nguyễn Văn A")
+                            .description("Doctor")
+                            .username("doctorA@999")
+                            .password("doctorA@999")
+                            .email("doctor_a@gmail.com")
+                            .address("Hà Nội")
+                            .phone("1111111111")
+                            .gender(Gender.MALE)
+                            .avatar("https://example.com/avatarA.jpg")
+                            .status(Status.ACTIVE)
+                            .roleTypes(Arrays.asList(EnumRole.DOCTOR, EnumRole.PATIENT))
+                            .doctorInfo(DoctorInfoDTO.builder()
+                                    .specializationId(1L)
+                                    .clinicId(1L)
+                                    .achievements("Đã có 5 năm kinh nghiệm điều trị nội khoa")
+                                    .medicalTraining("Đại học Y Hà Nội")
+                                    .build())
+                            .createPatient(true)
+                            .build(),
+                    UserCreationDTO.builder()
+                            .fullName("Trần Thị B")
+                            .description("Doctor")
+                            .username("doctorB@888")
+                            .password("doctorB@888")
+                            .email("doctor_b@gmail.com")
+                            .address("TP. Hồ Chí Minh")
+                            .phone("2222222222")
+                            .gender(Gender.FEMALE)
+                            .avatar("https://example.com/avatarB.jpg")
+                            .status(Status.ACTIVE)
+                            .roleTypes(Arrays.asList(EnumRole.DOCTOR, EnumRole.PATIENT))
+                            .doctorInfo(DoctorInfoDTO.builder()
+                                    .specializationId(2L)
+                                    .clinicId(2L)
+                                    .achievements("Chuyên gia 7 năm trong lĩnh vực ngoại khoa")
+                                    .medicalTraining("Đại học Y Dược TP. Hồ Chí Minh")
+                                    .build())
+                            .createPatient(true)
+                            .build(),
+                    UserCreationDTO.builder()
+                            .fullName("Lê Văn C")
+                            .description("Doctor")
+                            .username("doctorC@777")
+                            .password("doctorC@777")
+                            .email("doctor_c@gmail.com")
+                            .address("Đà Nẵng")
+                            .phone("3333333333")
+                            .gender(Gender.MALE)
+                            .avatar("https://example.com/avatarC.jpg")
+                            .status(Status.ACTIVE)
+                            .roleTypes(Arrays.asList(EnumRole.DOCTOR, EnumRole.PATIENT))
+                            .doctorInfo(DoctorInfoDTO.builder()
+                                    .specializationId(1L)
+                                    .clinicId(3L)
+                                    .achievements("Chuyên gia điều trị các bệnh về tim mạch")
+                                    .medicalTraining("Đại học Y Đà Nẵng")
+                                    .build())
+                            .createPatient(true)
+                            .build(),
+                    UserCreationDTO.builder()
+                            .fullName("Phạm Thị D")
+                            .description("Doctor")
+                            .username("doctorD@666")
+                            .password("doctorD@666")
+                            .email("doctor_d@gmail.com")
+                            .address("Cần Thơ")
+                            .phone("4444444444")
+                            .gender(Gender.FEMALE)
+                            .avatar("https://example.com/avatarD.jpg")
+                            .status(Status.ACTIVE)
+                            .roleTypes(Arrays.asList(EnumRole.DOCTOR, EnumRole.PATIENT))
+                            .doctorInfo(DoctorInfoDTO.builder()
+                                    .specializationId(2L)
+                                    .clinicId(4L)
+                                    .achievements("Hơn 10 năm kinh nghiệm điều trị bệnh nhân")
+                                    .medicalTraining("Đại học Y Cần Thơ")
+                                    .build())
+                            .createPatient(true)
+                            .build()
+            );
 
+            doctors.forEach(dataSetupService::createUserWithRoles);
 
-            // doctor
-            Specialization specialization1 = specializationrepo.findById(1L).orElseThrow(() -> new EntityNotFoundException("Specialization not found"));
-            Specialization specialization2 = specializationrepo.findById(2L).orElseThrow(() -> new EntityNotFoundException("Specialization not found"));
+            // tạo user cho patient
+            List<UserCreationDTO> patients = Arrays.asList(
+                    UserCreationDTO.builder()
+                            .fullName("Lê Văn E")
+                            .description("Patient")
+                            .username("patientE@999")
+                            .password("patientE@999")
+                            .email("patient_e@gmail.com")
+                            .address("Cần Thơ")
+                            .phone("5555555555")
+                            .gender(Gender.MALE)
+                            .avatar("https://example.com/avatar5.jpg")
+                            .status(Status.ACTIVE)
+                            .roleTypes(Collections.singletonList(EnumRole.PATIENT))
+                            .build(),
+                    UserCreationDTO.builder()
+                            .fullName("Trần Thị F")
+                            .description("Patient")
+                            .username("patientF@888")
+                            .password("patientF@888")
+                            .email("patient_f@gmail.com")
+                            .address("Hà Nội")
+                            .phone("6666666666")
+                            .gender(Gender.FEMALE)
+                            .avatar("https://example.com/avatar6.jpg")
+                            .status(Status.ACTIVE)
+                            .roleTypes(Collections.singletonList(EnumRole.PATIENT))
+                            .build(),
+                    UserCreationDTO.builder()
+                            .fullName("Nguyễn Văn G")
+                            .description("Patient")
+                            .username("patientG@777")
+                            .password("patientG@777")
+                            .email("patient_g@gmail.com")
+                            .address("TP. Hồ Chí Minh")
+                            .phone("7777777777")
+                            .gender(Gender.MALE)
+                            .avatar("https://example.com/avatar7.jpg")
+                            .status(Status.ACTIVE)
+                            .roleTypes(Collections.singletonList(EnumRole.PATIENT))
+                            .build(),
+                    UserCreationDTO.builder()
+                            .fullName("Phạm Thị H")
+                            .description("Patient")
+                            .username("patientH@666")
+                            .password("patientH@666")
+                            .email("patient_h@gmail.com")
+                            .address("Đà Nẵng")
+                            .phone("8888888888")
+                            .gender(Gender.FEMALE)
+                            .avatar("https://example.com/avatar8.jpg")
+                            .status(Status.ACTIVE)
+                            .roleTypes(Collections.singletonList(EnumRole.PATIENT))
+                            .build(),
+                    UserCreationDTO.builder()
+                            .fullName("Hoàng Văn I")
+                            .description("Patient")
+                            .username("patientI@555")
+                            .password("patientI@555")
+                            .email("patient_i@gmail.com")
+                            .address("Hải Phòng")
+                            .phone("9999999999")
+                            .gender(Gender.MALE)
+                            .avatar("https://example.com/avatar9.jpg")
+                            .status(Status.ACTIVE)
+                            .roleTypes(Collections.singletonList(EnumRole.PATIENT))
+                            .build()
+            );
 
-            Clinic clinic1 = clinicRepo.findById(1L).orElseThrow(() -> new EntityNotFoundException("Clinic not found"));
-            Clinic clinic2 = clinicRepo.findById(2L).orElseThrow(() -> new EntityNotFoundException("Clinic not found"));
-
-
-            // tạo user cho doctor
-            User userDoctor = User.builder()
-                    .fullName("John Doe")
-                    .username("johndoe@A123")
-                    .description("Visitor")
-                    .password(passwordEncoder.encode("johndoe@A123"))
-                    .email("johndoe@example.com")
-                    .address("Mars")
-                    .phone("1234567890")
-                    .avatar("https://images.pexels.com/photos/123456/pexels-photo-123456.jpeg")
-                    .gender(Gender.MALE)
-                    .status(Status.ACTIVE)
-                    .build();
-            Set<Role> rolesUserDoctor = new HashSet<>();
-            rolesUserDoctor.add(doctorRole);
-            rolesUserDoctor.add(patientRole);
-            userDoctor.setRoles(rolesUserDoctor);
-
-            // tạo doctor
-            Doctor doctor1 = new Doctor();
-            doctor1.setUser(userDoctor);
-            doctor1.setSpecialization(specialization1);
-            doctor1.setClinic(clinic1);
-            doctor1.setStatus(Status.ACTIVE);
-            doctor1.setAchievements("Đã có nhiều năm kinh nghiệm");
-            doctor1.setMedicalTraining("Đại học Y Hà Nội");
-            // lưu doctor
-            doctorRepo.save(doctor1);
-            // lưu user
-            userRepo.save(userDoctor);
-
-
-            // tạo user cho doctor
-            User userDoctor_2 = User.builder()
-                    .fullName("Nguyễn Văn B")
-                    .description("Doctor")
-                    .username("doctorB@A111")
-                    .password(passwordEncoder.encode("doctorB@A111"))
-                    .email("doctorb@gmail.com")
-                    .address("Trái Đất")
-                    .phone("0213377333")
-                    .avatar("https://images.pexels.com/photos/15793630/pexels-photo-15793630/free-photo-of-bi-n-th-i-trang-b-bi-n-ngay-l.jpeg")
-                    .gender(Gender.MALE)
-                    .status(Status.ACTIVE)
-                    .build();
-            userDoctor_2.setRoles(rolesUserDoctor);
-            // tạo doctor
-            Doctor doctor2 = new Doctor();
-            doctor2.setUser(userDoctor_2);
-            doctor2.setSpecialization(specialization1);
-            doctor2.setClinic(clinic1);
-            doctor2.setStatus(Status.ACTIVE);
-            doctor2.setAchievements("Đã có nhiều năm kinh nghiệm");
-            doctor2.setMedicalTraining("Đại học Y Đà Nẵng");
-            // lưu doctor
-            doctorRepo.save(doctor2);
-            // lưu user
-            userRepo.save(userDoctor_2);
-
-
-            // tạo user cho doctor
-            User userDoctor_3 = User.builder()
-                    .fullName("Nguyễn Văn C")
-                    .description("Doctor")
-                    .username("doctorC@A111")
-                    .password(passwordEncoder.encode("doctorC@A111"))
-                    .email("doctorc@gmail.com")
-                    .address("Trái Đất")
-                    .avatar("https://images.pexels.com/photos/28663059/pexels-photo-28663059.jpeg")
-                    .phone("0213377383")
-                    .gender(Gender.MALE)
-                    .status(Status.ACTIVE)
-                    .build();
-            userDoctor_3.setRoles(rolesUserDoctor);
-            // tạo doctor
-            Doctor doctor3 = new Doctor();
-            doctor3.setUser(userDoctor_3);
-            doctor3.setSpecialization(specialization1);
-            doctor3.setClinic(clinic1);
-            doctor3.setStatus(Status.ACTIVE);
-            doctor3.setAchievements("Đã có nhiều năm kinh nghiệm");
-            doctor3.setMedicalTraining("Đại học Y TP Hồ Chí Minh");
-            // lưu doctor
-            doctorRepo.save(doctor3);
-            // lưu user
-            userRepo.save(userDoctor_3);
-            // set role cho user
+            // Lưu danh sách bệnh nhân
+            patients.forEach(dataSetupService::createUserWithRoles);
 
 
         }
 
-        if(consultationRepo.count() == 0) {
+        if (consultationRepo.count() == 0) {
             // tạo user cho doctor
             Consultation handHygieneConsultation = Consultation.builder()
                     .question("What are the best practices for hand hygiene?")
@@ -423,7 +448,7 @@ public class DataInitializer {
             consultationRepo.save(electricalShockFirstAid);
         }
 
-        if(medicationRepo.count() == 0){
+        if (medicationRepo.count() == 0) {
             Medication Paracetamol = Medication.builder()
                     .name("Paracetamol") // tên thuốc
                     .dosage("500mg")     // liều lượng
@@ -631,17 +656,6 @@ public class DataInitializer {
             medicationRepo.save(Miralax);
             medicationRepo.save(Colace);
             medicationRepo.save(Dulcolax);
-
-
-
-
-
-
-
-
-
-
-
 
 
         }
