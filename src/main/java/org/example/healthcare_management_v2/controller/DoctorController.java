@@ -4,6 +4,7 @@ import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
 import org.example.healthcare_management_v2.dto.appointmentDto.AppointmentDto;
 import org.example.healthcare_management_v2.dto.appointmentDto.AppointmentX;
+import org.example.healthcare_management_v2.dto.auth.ApiResponse;
 import org.example.healthcare_management_v2.dto.doctorDto.DoctorProfileDto;
 import org.example.healthcare_management_v2.dto.doctorDto.Doctor_1;
 import org.example.healthcare_management_v2.dto.doctorDto.UpdateDoctorDto;
@@ -74,6 +75,18 @@ public class DoctorController {
     ) {
         Pageable pageable = PageRequest.of(page, size);
         return ResponseEntity.ok(appointmentService.findAppointmentsByDoctorUsername(username,status,pageable));
+    }
+
+    // xác nhận cuộc hẹn
+    // url: localhost:8080/api/doctors/appointments/1/CONFIRMED
+    @PutMapping("/appointments/{appointment_id}/{status}")
+    public ResponseEntity<ApiResponse> confirmAppointment(
+            @PathVariable Long appointment_id,
+            @PathVariable @Pattern(regexp = "^(PENDING|CONFIRMED|COMPLETED|NO_SHOW|CANCELLED|RESCHEDULED)$", message = "Invalid status name") String status
+    ) {
+        appointmentService.confirmAppointment(appointment_id,status);
+        ApiResponse apiResponse = new ApiResponse(true, "Appointment: " + status);
+        return ResponseEntity.ok(apiResponse);
     }
 
 }
