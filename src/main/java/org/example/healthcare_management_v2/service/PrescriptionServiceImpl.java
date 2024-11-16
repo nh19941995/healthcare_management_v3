@@ -2,7 +2,9 @@ package org.example.healthcare_management_v2.service;
 
 import lombok.AllArgsConstructor;
 import org.example.healthcare_management_v2.dto.prescriptionDto.PrescriptionDto;
+import org.example.healthcare_management_v2.dto.prescriptionDto.PrescriptionSimpleDto;
 import org.example.healthcare_management_v2.dto.prescriptionMedicationDto.PrescriptionMedicationDto;
+import org.example.healthcare_management_v2.dto.prescriptionMedicationDto.PrescriptionMedicationSimpleDto;
 import org.example.healthcare_management_v2.entities.Appointment;
 import org.example.healthcare_management_v2.entities.Medication;
 import org.example.healthcare_management_v2.entities.Prescription;
@@ -36,7 +38,7 @@ public class PrescriptionServiceImpl implements PrescriptionService {
 
     @Override
     @Transactional
-    public void createPrescription(PrescriptionDto prescriptionDto) {
+    public void createPrescription(PrescriptionSimpleDto prescriptionDto) {
         // tìm cuộc hẹn
         Appointment appointment = appointmentRepository.findById(prescriptionDto.getAppointmentId())
                 .orElseThrow(() -> new ResourceNotFoundException(
@@ -87,7 +89,7 @@ public class PrescriptionServiceImpl implements PrescriptionService {
     }
 
     // tạo đơn thuốc
-    private Prescription createPrescriptionEntity(PrescriptionDto prescriptionDto, Appointment appointment) {
+    private Prescription createPrescriptionEntity(PrescriptionSimpleDto prescriptionDto, Appointment appointment) {
         if (appointment.getPrescription() != null) {
             // Ném BusinessException với thông báo và status HTTP
             throw new BusinessException("Prescription already exists for this appointment.",
@@ -104,7 +106,7 @@ public class PrescriptionServiceImpl implements PrescriptionService {
 
     // tạo danh sách thuốc trong đơn thuốc
     private List<PrescriptionMedication> createPrescriptionMedications(
-            PrescriptionDto prescriptionDto, Prescription prescription) {
+            PrescriptionSimpleDto prescriptionDto, Prescription prescription) {
         return prescriptionDto.getMedications().stream()
                 .map(medicationDto -> createPrescriptionMedication(medicationDto, prescription))
                 .collect(Collectors.toList());
@@ -112,10 +114,10 @@ public class PrescriptionServiceImpl implements PrescriptionService {
 
     // tạo thông tin thuốc trong đơn thuốc
     private PrescriptionMedication createPrescriptionMedication(
-            PrescriptionMedicationDto medicationDto, Prescription prescription) {
-        Medication medication = medicationRepo.findById(medicationDto.getMedication().getId())
+            PrescriptionMedicationSimpleDto medicationDto, Prescription prescription) {
+        Medication medication = medicationRepo.findById(medicationDto.getMedicationId())
                 .orElseThrow(() -> new ResourceNotFoundException(
-                        "Medication", "id", medicationDto.getMedication().getId())
+                        "Medication", "id", medicationDto.getMedicationId())
                 );
 
         return PrescriptionMedication.builder()

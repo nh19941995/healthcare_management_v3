@@ -1,6 +1,7 @@
 package org.example.healthcare_management_v2.map;
 
 import org.example.healthcare_management_v2.dto.prescriptionMedicationDto.PrescriptionMedicationDto;
+import org.example.healthcare_management_v2.dto.prescriptionMedicationDto.PrescriptionMedicationSimpleDto;
 import org.example.healthcare_management_v2.entities.PrescriptionMedication;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -17,4 +18,7 @@ public interface PrescriptionMedicationMapper {
     PrescriptionMedication mapToEntity(PrescriptionMedicationDto prescriptionMedicationDto);
 
     PrescriptionMedicationDto mapToDto(PrescriptionMedication prescriptionMedication);
+
+    @Mapping(target = "medicationId", source = "medication.id")
+    PrescriptionMedicationSimpleDto mapToSimpleDto(PrescriptionMedication prescriptionMedication);
 }

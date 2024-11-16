@@ -24,4 +24,6 @@ public interface PrescriptionMapper {
     @Mapping(target = "medications", source = "id", qualifiedByName = "getMedicationsByPrescriptionId")
     PrescriptionDto prescriptionToPrescriptionDto(Prescription prescription);
 
+
+
 }

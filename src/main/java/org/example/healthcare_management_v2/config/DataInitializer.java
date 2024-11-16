@@ -326,6 +326,7 @@ public class DataInitializer {
                             .gender(Gender.MALE)
                             .avatar("https://example.com/avatar5.jpg")
                             .status(Status.ACTIVE)
+                            .createPatient(true)
                             .roleTypes(Collections.singletonList(EnumRole.PATIENT))
                             .build(),
                     UserCreationDTO.builder()
@@ -339,6 +340,7 @@ public class DataInitializer {
                             .gender(Gender.FEMALE)
                             .avatar("https://example.com/avatar6.jpg")
                             .status(Status.ACTIVE)
+                            .createPatient(true)
                             .roleTypes(Collections.singletonList(EnumRole.PATIENT))
                             .build(),
                     UserCreationDTO.builder()
@@ -352,6 +354,7 @@ public class DataInitializer {
                             .gender(Gender.MALE)
                             .avatar("https://example.com/avatar7.jpg")
                             .status(Status.ACTIVE)
+                            .createPatient(true)
                             .roleTypes(Collections.singletonList(EnumRole.PATIENT))
                             .build(),
                     UserCreationDTO.builder()
@@ -365,6 +368,7 @@ public class DataInitializer {
                             .gender(Gender.FEMALE)
                             .avatar("https://example.com/avatar8.jpg")
                             .status(Status.ACTIVE)
+                            .createPatient(true)
                             .roleTypes(Collections.singletonList(EnumRole.PATIENT))
                             .build(),
                     UserCreationDTO.builder()
@@ -376,6 +380,7 @@ public class DataInitializer {
                             .address("Hải Phòng")
                             .phone("9999999999")
                             .gender(Gender.MALE)
+                            .createPatient(true)
                             .avatar("https://example.com/avatar9.jpg")
                             .status(Status.ACTIVE)
                             .roleTypes(Collections.singletonList(EnumRole.PATIENT))
