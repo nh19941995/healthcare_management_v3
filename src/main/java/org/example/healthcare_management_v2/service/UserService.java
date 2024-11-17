@@ -37,4 +37,7 @@ public interface UserService {
     // kiểm tra trạng thái user
     void checkStatus(String username);
 
+    // lấy user theo status
+    Page<UserWithDoctorDto> findAllUserByStatus( Pageable pageable,String status);
+
 }

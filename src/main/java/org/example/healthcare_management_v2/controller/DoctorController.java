@@ -2,14 +2,11 @@ package org.example.healthcare_management_v2.controller;
 
 import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
-import org.example.healthcare_management_v2.dto.appointmentDto.AppointmentDto;
 import org.example.healthcare_management_v2.dto.appointmentDto.AppointmentX;
 import org.example.healthcare_management_v2.dto.auth.ApiResponse;
 import org.example.healthcare_management_v2.dto.doctorDto.DoctorProfileDto;
 import org.example.healthcare_management_v2.dto.doctorDto.Doctor_1;
 import org.example.healthcare_management_v2.dto.doctorDto.UpdateDoctorDto;
-import org.example.healthcare_management_v2.enums.AppointmentsStatus;
-import org.example.healthcare_management_v2.repositories.DoctorRepo;
 import org.example.healthcare_management_v2.service.AppointmentService;
 import org.example.healthcare_management_v2.service.DoctorService;
 import org.springframework.data.domain.Page;

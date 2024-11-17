@@ -127,6 +127,22 @@ public class UserServiceImpl implements UserService {
         }
     }
 
+    @Override
+    public Page<UserWithDoctorDto> findAllUserByStatus( Pageable pageable,String status) {
+        if (status.equals("ALL")) {
+            return findAllUserInDB(pageable);
+        }
+
+        if (status.equals("NONDELETED")) {
+            return userRepository.findAll(pageable).map(userMapper::userToUserWithDoctorDto);
+        }
+
+        if (status.equals("DELETED")) {
+            return userRepository.findAllDeleted(pageable).map(userMapper::userToUserWithDoctorDto);
+        }
+        return userRepository.findByStatus(status, pageable).map(userMapper::userToUserWithDoctorDto);
+    }
+
     private boolean isPatientOnly(User user) {
         Role patientRole = roleRepository.findByName(EnumRole.PATIENT.getRoleName())
                 .orElseThrow(() -> new EntityNotFoundException("Role not found"));

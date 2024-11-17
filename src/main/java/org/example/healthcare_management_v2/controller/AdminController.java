@@ -50,9 +50,24 @@ public class AdminController {
     public ResponseEntity<Page<UserWithDoctorDto>> getAllUsersInDb(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size
+
     ) {
         Pageable pageable = PageRequest.of(page, size);
         return ResponseEntity.ok(userService.findAllUserInDB(pageable));
+    }
+
+    // lấy tất cả user theo status
+    // url: localhost:8080/admin/getUsersByStatus/ACTIVE?page=0&size=5
+    @GetMapping("/getUsersByStatus/{status}")
+    public ResponseEntity<Page<UserWithDoctorDto>> getUsersByStatus(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @PathVariable @Pattern(
+                    regexp = "^(ACTIVE|BLOCKED|DELETED|NONDELETED|ALL)$"
+                    , message = "Invalid status name") String status
+    ) {
+        Pageable pageable = PageRequest.of(page, size);
+        return ResponseEntity.ok(userService.findAllUserByStatus(pageable, status));
     }
 
 

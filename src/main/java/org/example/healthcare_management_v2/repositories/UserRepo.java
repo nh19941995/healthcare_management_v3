@@ -23,4 +23,11 @@ public interface UserRepo extends JpaRepository<User, Long> {
     @Query(value = "SELECT * FROM users", nativeQuery = true)
     Page<User> allUserInDb(@NonNull Pageable pageable);
 
+    @Query(value = "SELECT * FROM users WHERE status = :status AND deleted_at IS NULL", nativeQuery = true)
+    Page<User> findByStatus(@Param("status") String status, Pageable pageable);
+
+    @Query(value = "SELECT * FROM users WHERE deleted_at IS NOT NULL", nativeQuery = true)
+    Page<User> findAllDeleted(Pageable pageable);
+
+
 }
