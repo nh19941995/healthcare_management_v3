@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import org.example.healthcare_management_v2.dto.appointmentDto.AppointmentX;
 import org.example.healthcare_management_v2.dto.auth.ApiResponse;
 import org.example.healthcare_management_v2.dto.userDto.UserWithDoctorDto;
+import org.example.healthcare_management_v2.entities.User;
 import org.example.healthcare_management_v2.service.AppointmentService;
 import org.example.healthcare_management_v2.service.UserService;
 import org.springframework.data.domain.Page;
@@ -33,6 +34,7 @@ public class AdminController {
         return ResponseEntity.ok(new ApiResponse(true, "Role updated successfully!"));
     }
 
+
     // lấy tất cả user (có phân trang)
     // url: localhost:8080/admin/users?page=0&size=5
     @GetMapping("/users")
@@ -43,6 +45,7 @@ public class AdminController {
         Pageable pageable = PageRequest.of(page, size);
         return ResponseEntity.ok(userService.findAll(pageable));
     }
+
 
     // lấy tất cả user trong db (có phân trang)
     // url: localhost:8080/admin/allUsersInDb?page=0&size=5
@@ -55,6 +58,7 @@ public class AdminController {
         Pageable pageable = PageRequest.of(page, size);
         return ResponseEntity.ok(userService.findAllUserInDB(pageable));
     }
+
 
     // lấy tất cả user theo status
     // url: localhost:8080/admin/getUsersByStatus/ACTIVE?page=0&size=5
@@ -71,7 +75,6 @@ public class AdminController {
     }
 
 
-
     // khóa hoăc mở khóa user
     // url: localhost:8080/admin/blockOrUnblock/ababab@A111/reason
     @PutMapping("/blockOrUnblock/{username}/{reason}")
@@ -79,9 +82,14 @@ public class AdminController {
             @PathVariable String username,
             @PathVariable String reason
     ) {
-        userService.blockOrUnblock(username, reason);
-        return ResponseEntity.ok(new ApiResponse(true, "User blocked successfully!"));
+        User user =  userService.blockOrUnblock(username, reason);
+        if (user.getStatus().toString().equals("LOCKED")) {
+            return ResponseEntity.ok(new ApiResponse(true, "User blocked successfully!"));
+        } else {
+            return ResponseEntity.ok(new ApiResponse(true, "User unblocked successfully!"));
+        }
     }
+
 
     // xem toan bo cac cuoc hen cua tat ca cac bac si
     // url: localhost:8080/admin/appointments/PENDING?page=0&size=10

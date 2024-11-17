@@ -8,6 +8,7 @@ import org.example.healthcare_management_v2.dto.userDto.UserWithDoctorDto;
 import org.example.healthcare_management_v2.entities.Role;
 import org.example.healthcare_management_v2.entities.User;
 import org.example.healthcare_management_v2.enums.EnumRole;
+import org.example.healthcare_management_v2.enums.Status;
 import org.example.healthcare_management_v2.exceptions.BusinessException;
 import org.example.healthcare_management_v2.exceptions.ResourceNotFoundException;
 import org.example.healthcare_management_v2.map.UserMapper;
@@ -103,17 +104,20 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void blockOrUnblock(String username,String reason) {
-        User user = userRepository.findByUsernameAndDeletedAtIsNotNull(username)
-                .orElse(
-                        userRepository.findByUsername(username)
-                                .orElseThrow(() -> new ResourceNotFoundException("User", "username", username))
-                );
-        user.setDeletedAt(
-                user.getDeletedAt() == null ? java.time.LocalDateTime.now() : null
-        );
-        user.setLockReason(reason);
+    public User blockOrUnblock(String username,String reason) {
+        // lấy ra user theo username nếu nó tồn tại trong db
+        User user = userRepository.findByUserInDb(username)
+                .orElseThrow(() -> new ResourceNotFoundException("User", "username", username));
+        // nếu user chưa bị xóa thì khóa user
+        if (user.getStatus() == Status.ACTIVE) {
+            user.setStatus(Status.LOCKED);
+            user.setLockReason(reason);
+        } else {
+            user.setStatus(Status.ACTIVE);
+            user.setLockReason(null);
+        }
         userRepository.save(user);
+        return user;
     }
 
     @Override
@@ -129,18 +133,12 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Page<UserWithDoctorDto> findAllUserByStatus( Pageable pageable,String status) {
-        if (status.equals("ALL")) {
-            return findAllUserInDB(pageable);
-        }
-
-        if (status.equals("NONDELETED")) {
-            return userRepository.findAll(pageable).map(userMapper::userToUserWithDoctorDto);
-        }
-
-        if (status.equals("DELETED")) {
-            return userRepository.findAllDeleted(pageable).map(userMapper::userToUserWithDoctorDto);
-        }
-        return userRepository.findByStatus(status, pageable).map(userMapper::userToUserWithDoctorDto);
+        return switch (status) {
+            case "ALL" -> findAllUserInDB(pageable);
+            case "NONDELETED" -> userRepository.findAll(pageable).map(userMapper::userToUserWithDoctorDto);
+            case "DELETED" -> userRepository.findAllDeleted(pageable).map(userMapper::userToUserWithDoctorDto);
+            default -> userRepository.findByStatus(status, pageable).map(userMapper::userToUserWithDoctorDto);
+        };
     }
 
     private boolean isPatientOnly(User user) {
@@ -149,3 +147,5 @@ public class UserServiceImpl implements UserService {
         return user.getRoles().contains(patientRole) && user.getRoles().size() == 1;
     }
 }
+
+

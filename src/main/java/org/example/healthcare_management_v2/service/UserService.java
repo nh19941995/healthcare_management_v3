@@ -32,7 +32,7 @@ public interface UserService {
     public void updateProfile(Long userId, UpdateUserDto userDto);
 
     // khóa user
-    public void blockOrUnblock(String username, String reason);
+    public User blockOrUnblock(String username, String reason);
 
     // kiểm tra trạng thái user
     void checkStatus(String username);

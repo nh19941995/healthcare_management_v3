@@ -15,7 +15,8 @@ public interface UserRepo extends JpaRepository<User, Long> {
     Optional<User> findByUsername(String username);
 
 
-    Optional<User> findByUsernameAndDeletedAtIsNotNull(String username);
+    @Query(value = "SELECT * FROM users WHERE username = :username", nativeQuery = true)
+    Optional<User> findByUserInDb(String username);
 
     @Query(value = "SELECT * FROM users WHERE username = :username", nativeQuery = true)
     Optional<User> findByUsernameByAllStatus(@Param("username") String username);
