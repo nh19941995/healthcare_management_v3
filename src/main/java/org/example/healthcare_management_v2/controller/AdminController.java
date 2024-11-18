@@ -67,12 +67,23 @@ public class AdminController {
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
             @PathVariable @Pattern(
-                    regexp = "^(ACTIVE|BLOCKED|DELETED|NONDELETED|ALL)$"
+                    regexp = "^(ACTIVE|LOCKED|DELETED|NONDELETED|ALL)$"
                     , message = "Invalid status name") String status
     ) {
         Pageable pageable = PageRequest.of(page, size);
         return ResponseEntity.ok(userService.findAllUserByStatus(pageable, status));
     }
+
+    // xóa user bằng username
+    // url: localhost:8080/admin/deleteUser/ababab@A111
+    @PutMapping("/deleteUser/{username}")
+    public ResponseEntity<ApiResponse> deleteUser(
+            @PathVariable String username
+    ) {
+        userService.deleteUserByUsername(username);
+        return ResponseEntity.ok(new ApiResponse(true, "User deleted successfully!"));
+    }
+
 
 
     // khóa hoăc mở khóa user

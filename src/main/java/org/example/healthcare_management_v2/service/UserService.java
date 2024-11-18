@@ -40,4 +40,7 @@ public interface UserService {
     // lấy user theo status
     Page<UserWithDoctorDto> findAllUserByStatus( Pageable pageable,String status);
 
+    // xóa user bằng username
+    void deleteUserByUsername(String username);
+
 }

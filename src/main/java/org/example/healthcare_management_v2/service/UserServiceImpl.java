@@ -141,6 +141,17 @@ public class UserServiceImpl implements UserService {
         };
     }
 
+    @Override
+    public void deleteUserByUsername(String username) {
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new ResourceNotFoundException("User", "username", username));
+        user.setDeletedAt(
+                // lấy thời gian hiện tại
+                java.time.LocalDateTime.now()
+        );
+        userRepository.save(user);
+    }
+
     private boolean isPatientOnly(User user) {
         Role patientRole = roleRepository.findByName(EnumRole.PATIENT.getRoleName())
                 .orElseThrow(() -> new EntityNotFoundException("Role not found"));
