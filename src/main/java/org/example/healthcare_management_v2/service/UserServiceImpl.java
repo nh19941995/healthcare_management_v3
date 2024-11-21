@@ -5,15 +5,13 @@ import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 import org.example.healthcare_management_v2.dto.userDto.UpdateUserDto;
 import org.example.healthcare_management_v2.dto.userDto.UserWithDoctorDto;
-import org.example.healthcare_management_v2.entities.Role;
-import org.example.healthcare_management_v2.entities.User;
+import org.example.healthcare_management_v2.entities.*;
 import org.example.healthcare_management_v2.enums.EnumRole;
 import org.example.healthcare_management_v2.enums.Status;
 import org.example.healthcare_management_v2.exceptions.BusinessException;
 import org.example.healthcare_management_v2.exceptions.ResourceNotFoundException;
 import org.example.healthcare_management_v2.map.UserMapper;
-import org.example.healthcare_management_v2.repositories.RoleRepo;
-import org.example.healthcare_management_v2.repositories.UserRepo;
+import org.example.healthcare_management_v2.repositories.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -31,7 +29,9 @@ public class UserServiceImpl implements UserService {
     private final UserRepo userRepository;
     private final RoleRepo roleRepository;
     private final UserMapper userMapper;
-    private final FileService fileService;
+    private final DoctorRepo doctorRepo;
+    private final PatientRepo patientRepo;
+    private final PatientStatusRepo patientStatusRepo;
 
     @Override
     public User findByUsername(String username) {
@@ -91,6 +91,24 @@ public class UserServiceImpl implements UserService {
                         "No role found with name: " + roleName,
                         HttpStatus.NOT_FOUND));
         user.getRoles().add(role);
+        if (roleName.equals(EnumRole.DOCTOR.getRoleName())) {
+            Doctor doctor = new Doctor();
+            doctor.setStatus(Status.ACTIVE);
+            doctor.setUser(user);
+            doctorRepo.save(doctor);
+            user.setDoctor(doctor);
+        }
+        if (roleName.equals(EnumRole.PATIENT.getRoleName())) {
+            Patient patient = new Patient();
+            PatientStatus patientStatus = patientStatusRepo.findById(1L)
+                    .orElseThrow(() -> new BusinessException("Patient status not found",
+                            "No patient status found with id: 1",
+                            HttpStatus.NOT_FOUND));
+            patient.setStatus(patientStatus);
+            patient.setUser(user);
+            patientRepo.save(patient);
+            user.setPatient(new Patient());
+        }
         userRepository.save(user);
     }
 

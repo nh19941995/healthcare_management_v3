@@ -1,7 +1,6 @@
 package org.example.healthcare_management_v2.config;
 
 import jakarta.annotation.PostConstruct;
-import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.example.healthcare_management_v2.config.dto_config.DoctorInfoDTO;
@@ -12,7 +11,6 @@ import org.example.healthcare_management_v2.enums.EnumRole;
 import org.example.healthcare_management_v2.enums.Gender;
 import org.example.healthcare_management_v2.enums.Status;
 import org.example.healthcare_management_v2.repositories.*;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalTime;
@@ -28,10 +26,8 @@ public class DataInitializer {
     private final RoleRepo roleRepo;
     private final PatientStatusRepo patientStatusrepo;
     private final SpecializationRepo specializationrepo;
-    private final PasswordEncoder passwordEncoder;
     private final ConsultationRepo consultationRepo;
     private final MedicationRepo medicationRepo;
-    private final PatientRepo patientRepo;
     private final DataSetupService dataSetupService;
 
     @PostConstruct
