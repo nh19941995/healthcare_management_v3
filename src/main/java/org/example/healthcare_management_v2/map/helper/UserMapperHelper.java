@@ -18,11 +18,9 @@ public class UserMapperHelper {
         if (username == null) {
             return null;
         }
-        try {
-            return fileService.getAvatar(username);
-        } catch (Exception e) {
-            return null;
-        }
+
+        return fileService.getAvatar(username);
+
     }
 
 }

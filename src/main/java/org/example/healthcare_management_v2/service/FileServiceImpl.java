@@ -1,5 +1,6 @@
 package org.example.healthcare_management_v2.service;
 
+import lombok.extern.slf4j.Slf4j;
 import org.example.healthcare_management_v2.entities.User;
 import org.example.healthcare_management_v2.enums.FileType;
 import org.example.healthcare_management_v2.repositories.UserRepo;
@@ -13,7 +14,9 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.Base64;
+import java.util.stream.Stream;
 
+@Slf4j
 @Service
 public class FileServiceImpl implements FileService {
 
@@ -48,17 +51,29 @@ public class FileServiceImpl implements FileService {
 
     @Override
     public String getAvatar(String username) {
-        return getImage(uploadAvatarDir, username + AVATAR_PREFIX);
+        try {
+            return getImage(uploadAvatarDir, username + AVATAR_PREFIX);
+        }catch (Exception e){
+            return getImage(uploadAvatarDir, "default_avatar");
+        }
     }
 
     @Override
     public String getClinicImage(Long clinicId) {
-        return getImage(uploadClinicDir, CLINIC_PREFIX + clinicId);
+        try {
+            return getImage(uploadClinicDir, CLINIC_PREFIX + clinicId);
+        }catch (Exception e){
+            return getImage(uploadClinicDir, "default_clinic");
+        }
     }
 
     @Override
     public String getSpecializationImage(Long specializationId) {
-        return getImage(uploadSpecializationDir, SPECIALIZATION_PREFIX + specializationId);
+        try {
+            return getImage(uploadSpecializationDir, SPECIALIZATION_PREFIX + specializationId);
+        }catch (Exception e){
+            return getImage(uploadSpecializationDir, "default_specialization");
+        }
     }
 
     @Override
@@ -145,11 +160,14 @@ public class FileServiceImpl implements FileService {
 
     // tìm file ảnh theo prefix
     private Path findImageByPrefix(Path directory, String prefix) throws IOException {
-        return Files.list(directory)
-                .filter(path -> path.getFileName().toString().startsWith(prefix))
-                .findFirst()
-                .orElseThrow(() -> new IOException("Image not found with prefix: " + prefix));
+        try (Stream<Path> stream = Files.list(directory)) {
+            return stream
+                    .filter(path -> path.getFileName().toString().startsWith(prefix))
+                    .findFirst()
+                    .orElseThrow(() -> new IOException("Image not found with prefix: " + prefix));
+        }
     }
+
 
     // lấy phần mở rộng của file ảnh
     private String getImageExtension(Path imagePath) throws IOException {

@@ -23,6 +23,7 @@ public class UserController {
     private final UserRepo userRepository;
     private final UserMapper userMapper;
     private final UserService userService;
+    private final FileService fileService;
 
     // lấy thông tin user theo username
     // url: localhost:8080/users/username
@@ -32,10 +33,15 @@ public class UserController {
         // Kiểm tra xem người dùng hiện tại có phải là người sở hữu tài khoản không
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String currentUsername = authentication.getName();
-        log.info("currentUsername: " + currentUsername);
 
-        if (!currentUsername.equals(username)) {
-            throw new RuntimeException("You can only view your own profile");
+        // Kiểm tra xem người dùng có vai trò admin
+        boolean isAdmin = authentication.getAuthorities().stream()
+                .anyMatch(authority -> authority.getAuthority().equals("ROLE_ADMIN"));
+
+        // chỉ admin hoặc người dùng hiện tại mới có thể cập nhật ảnh đại diện
+        if (!currentUsername.equals(username) && !isAdmin)
+        {
+            throw new RuntimeException("You can view your own profile");
         }
 
         User user = userRepository.findByUsername(username).orElseThrow(
@@ -54,6 +60,13 @@ public class UserController {
     ) {
         userService.updateProfile(userDto.getId(), userDto);
         return ResponseEntity.ok(userDto);
+    }
+
+    // lấy ảnh avatar của user
+    // url: localhost:8080/api/users/avatar/username
+    @GetMapping("/avatar/{username}")
+    public ResponseEntity<String> getAvatar(@PathVariable String username) {
+        return ResponseEntity.ok(fileService.getAvatar(username));
     }
 
 }
