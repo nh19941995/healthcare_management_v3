@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.healthcare_management_v2.dto.UserDto;
 import org.example.healthcare_management_v2.dto.userDto.UpdateUserDto;
+import org.example.healthcare_management_v2.dto.userDto.UserUpdateDto;
 import org.example.healthcare_management_v2.entities.User;
 import org.example.healthcare_management_v2.map.UserMapper;
 import org.example.healthcare_management_v2.repositories.UserRepo;
@@ -54,13 +55,26 @@ public class UserController {
 
     // update theo userId
     // url: localhost:8080/api/users
+//    @PutMapping("")
+//    public ResponseEntity<UpdateUserDto> updateUser(
+//            @RequestBody UpdateUserDto userDto
+//    ) {
+//        userService.updateProfile(userDto.getId(), userDto);
+//        return ResponseEntity.ok(userDto);
+//    }
+
+
+    // update theo userId
+    // url: localhost:8080/api/users
     @PutMapping("")
-    public ResponseEntity<UpdateUserDto> updateUser(
-            @RequestBody UpdateUserDto userDto
+    public ResponseEntity<UserUpdateDto> updateUserV2(
+            @RequestBody UserUpdateDto userDto
     ) {
-        userService.updateProfile(userDto.getId(), userDto);
+        userService.updateProfilev2(userDto);
         return ResponseEntity.ok(userDto);
     }
+
+
 
     // lấy ảnh avatar của user
     // url: localhost:8080/api/users/avatar/username
@@ -68,5 +82,7 @@ public class UserController {
     public ResponseEntity<String> getAvatar(@PathVariable String username) {
         return ResponseEntity.ok(fileService.getAvatar(username));
     }
+
+
 
 }

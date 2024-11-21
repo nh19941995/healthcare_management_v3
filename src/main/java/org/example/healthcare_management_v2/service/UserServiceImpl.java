@@ -4,6 +4,7 @@ import io.micrometer.common.lang.NonNull;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 import org.example.healthcare_management_v2.dto.userDto.UpdateUserDto;
+import org.example.healthcare_management_v2.dto.userDto.UserUpdateDto;
 import org.example.healthcare_management_v2.dto.userDto.UserWithDoctorDto;
 import org.example.healthcare_management_v2.entities.*;
 import org.example.healthcare_management_v2.enums.EnumRole;
@@ -32,6 +33,8 @@ public class UserServiceImpl implements UserService {
     private final DoctorRepo doctorRepo;
     private final PatientRepo patientRepo;
     private final PatientStatusRepo patientStatusRepo;
+    private final SpecializationRepo specializationRepo;
+    private final ClinicRepo clinicRepo;
 
     @Override
     public User findByUsername(String username) {
@@ -118,6 +121,30 @@ public class UserServiceImpl implements UserService {
         User oldUser = validateOwnership(userId);
 
         userMapper.updateUserFromUpdateUserDto(userDto, oldUser);
+        userRepository.save(oldUser);
+    }
+
+    @Override
+    public void updateProfilev2(UserUpdateDto userDto) {
+        User oldUser = validateOwnership(userDto.getId());
+        userMapper.updateUserFromUserUpdateDto(userDto, oldUser);
+        Doctor doctor = oldUser.getDoctor();
+        if (doctor != null) {
+             Specialization specialization = specializationRepo.findById(userDto.getSpecializationId())
+                    .orElseThrow(() -> new BusinessException("Specialization not found",
+                            "No specialization found with id: " + userDto.getSpecializationId(),
+                            HttpStatus.NOT_FOUND));
+            Clinic clinic = clinicRepo.findById(userDto.getClinicId())
+                    .orElseThrow(() -> new BusinessException("Clinic not found",
+                            "No clinic found with id: " + userDto.getClinicId(),
+                            HttpStatus.NOT_FOUND));
+
+            doctor.setSpecialization(specialization);
+            doctor.setClinic(clinic);
+            doctor.setAchievements(userDto.getAchievements());
+            doctor.setMedicalTraining(userDto.getMedicalTraining());
+            doctorRepo.save(doctor);
+        }
         userRepository.save(oldUser);
     }
 

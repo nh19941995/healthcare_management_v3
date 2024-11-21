@@ -3,6 +3,7 @@ package org.example.healthcare_management_v2.map;
 import org.example.healthcare_management_v2.dto.UserDto;
 import org.example.healthcare_management_v2.dto.auth.RegisterDto;
 import org.example.healthcare_management_v2.dto.userDto.UpdateUserDto;
+import org.example.healthcare_management_v2.dto.userDto.UserUpdateDto;
 import org.example.healthcare_management_v2.dto.userDto.UserWithDoctorDto;
 import org.example.healthcare_management_v2.entities.User;
 import org.example.healthcare_management_v2.map.helper.UserMapperHelper;
@@ -38,4 +39,7 @@ public interface UserMapper {
 
     @Mapping(target = "avatar", source = "user.username", qualifiedByName = "getAvatarForUser")
     UserWithDoctorDto userToUserWithDoctorDto(User user);
+
+    // cập nhật thông tin user từ UserUpdateDto (cập nhật)
+    void updateUserFromUserUpdateDto(UserUpdateDto userUpdateDto, @MappingTarget User user);
 }

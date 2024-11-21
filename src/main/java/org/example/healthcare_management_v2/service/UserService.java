@@ -1,6 +1,7 @@
 package org.example.healthcare_management_v2.service;
 
 import org.example.healthcare_management_v2.dto.userDto.UpdateUserDto;
+import org.example.healthcare_management_v2.dto.userDto.UserUpdateDto;
 import org.example.healthcare_management_v2.dto.userDto.UserWithDoctorDto;
 import org.example.healthcare_management_v2.entities.User;
 import org.springframework.data.domain.Page;
@@ -30,6 +31,7 @@ public interface UserService {
 
     // cập nhật thông tin user
     public void updateProfile(Long userId, UpdateUserDto userDto);
+    public void updateProfilev2(UserUpdateDto userDto);
 
     // khóa user
     public User blockOrUnblock(String username, String reason);
