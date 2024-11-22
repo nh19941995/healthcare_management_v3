@@ -162,6 +162,11 @@ public class UserServiceImpl implements UserService {
         // lấy ra user theo username nếu nó tồn tại trong db
         User user = userRepository.findByUserInDb(username)
                 .orElseThrow(() -> new ResourceNotFoundException("User", "username", username));
+        // kiểm tra user bị khóa có phải admin ko, nếu phải thì không thể khóa
+        if (user.getRoles().stream().anyMatch(role -> role.getName().equals(EnumRole.ADMIN.getRoleName()))) {
+            throw new AccessDeniedException("You cannot block an admin");
+        }
+
         // nếu user chưa bị xóa thì khóa user
         if (user.getStatus() == Status.ACTIVE) {
             user.setStatus(Status.LOCKED);

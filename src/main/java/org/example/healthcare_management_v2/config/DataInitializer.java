@@ -205,7 +205,7 @@ public class DataInitializer {
 
             // tạo lễ tân
             UserCreationDTO receptionist_1 = UserCreationDTO.builder()
-                    .fullName("Phạm Văn C")
+                    .fullName("Phạm Văn Cảnh")
                     .description("Receptionist")
                     .username("receptionistC@999")
                     .password("receptionistC@999")
@@ -226,7 +226,7 @@ public class DataInitializer {
             // tạo user cho doctor có quyền doctor và patient
             List<UserCreationDTO> doctors = Arrays.asList(
                     UserCreationDTO.builder()
-                            .fullName("Nguyễn Văn A")
+                            .fullName("Nguyễn Văn Anh")
                             .description("Doctor")
                             .username("doctorA@999")
                             .password("doctorA@999")
@@ -245,8 +245,9 @@ public class DataInitializer {
                                     .build())
                             .createPatient(true)
                             .build(),
+
                     UserCreationDTO.builder()
-                            .fullName("Trần Thị B")
+                            .fullName("Trần Thị Bình")
                             .description("Doctor")
                             .username("doctorB@888")
                             .password("doctorB@888")
@@ -266,7 +267,7 @@ public class DataInitializer {
                             .createPatient(true)
                             .build(),
                     UserCreationDTO.builder()
-                            .fullName("Lê Văn C")
+                            .fullName("Lê Văn Chinh")
                             .description("Doctor")
                             .username("doctorC@777")
                             .password("doctorC@777")
@@ -286,7 +287,7 @@ public class DataInitializer {
                             .createPatient(true)
                             .build(),
                     UserCreationDTO.builder()
-                            .fullName("Phạm Thị D")
+                            .fullName("Phạm Thị Dung")
                             .description("Doctor")
                             .username("doctorD@666")
                             .password("doctorD@666")
@@ -312,7 +313,7 @@ public class DataInitializer {
             // tạo user cho patient
             List<UserCreationDTO> patients = Arrays.asList(
                     UserCreationDTO.builder()
-                            .fullName("Lê Văn E")
+                            .fullName("Lê Văn Nam")
                             .description("Patient")
                             .username("patientE@999")
                             .password("patientE@999")
@@ -326,7 +327,7 @@ public class DataInitializer {
                             .roleTypes(Collections.singletonList(EnumRole.PATIENT))
                             .build(),
                     UserCreationDTO.builder()
-                            .fullName("Trần Thị F")
+                            .fullName("Trần Thị Thanh")
                             .description("Patient")
                             .username("patientF@888")
                             .password("patientF@888")
@@ -340,7 +341,7 @@ public class DataInitializer {
                             .roleTypes(Collections.singletonList(EnumRole.PATIENT))
                             .build(),
                     UserCreationDTO.builder()
-                            .fullName("Nguyễn Văn G")
+                            .fullName("Nguyễn Văn Giang")
                             .description("Patient")
                             .username("patientG@777")
                             .password("patientG@777")
@@ -354,7 +355,7 @@ public class DataInitializer {
                             .roleTypes(Collections.singletonList(EnumRole.PATIENT))
                             .build(),
                     UserCreationDTO.builder()
-                            .fullName("Phạm Thị H")
+                            .fullName("Phạm Thị Hải")
                             .description("Patient")
                             .username("patientH@666")
                             .password("patientH@666")
@@ -368,7 +369,7 @@ public class DataInitializer {
                             .roleTypes(Collections.singletonList(EnumRole.PATIENT))
                             .build(),
                     UserCreationDTO.builder()
-                            .fullName("Hoàng Văn I")
+                            .fullName("Hoàng Văn Khoa")
                             .description("Patient")
                             .username("patientI@555")
                             .password("patientI@555")
@@ -380,7 +381,39 @@ public class DataInitializer {
                             .avatar("https://example.com/avatar9.jpg")
                             .status(Status.ACTIVE)
                             .roleTypes(Collections.singletonList(EnumRole.PATIENT))
+                            .build(),
+
+                    UserCreationDTO.builder()
+                            .fullName("Nguyễn Thị Thảo")
+                            .description("Patient")
+                            .username("patientJ_2@444")
+                            .password("patientJ_2@444")
+                            .email("patientJ_2@gmail.com")
+                            .address("Hà Nội")
+                            .phone("0123456789")
+                            .gender(Gender.MALE)
+                            .createPatient(true)
+                            .avatar("https://example.com/avatar9.jpg")
+                            .status(Status.ACTIVE)
+                            .roleTypes(Collections.singletonList(EnumRole.PATIENT))
+                            .build(),
+
+                    UserCreationDTO.builder()
+                            .fullName("Nguyễn Thị Thảo")
+                            .description("Patient")
+                            .username("patientJ_1@444")
+                            .password("patientJ_1@444")
+                            .email("patientJ_1@gmail.com")
+                            .address("Hà Nội")
+                            .phone("0123456789")
+                            .gender(Gender.MALE)
+                            .createPatient(true)
+                            .avatar("https://example.com/avatar9.jpg")
+                            .status(Status.ACTIVE)
+                            .roleTypes(Collections.singletonList(EnumRole.PATIENT))
                             .build()
+
+
             );
 
             // Lưu danh sách bệnh nhân

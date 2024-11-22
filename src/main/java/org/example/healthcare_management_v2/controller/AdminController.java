@@ -94,6 +94,7 @@ public class AdminController {
             @PathVariable String reason
     ) {
         User user =  userService.blockOrUnblock(username, reason);
+
         if (user.getStatus().toString().equals("LOCKED")) {
             return ResponseEntity.ok(new ApiResponse(true, "User blocked successfully!"));
         } else {
