@@ -2,6 +2,7 @@ package org.example.healthcare_management_v2.service;
 
 import io.micrometer.common.lang.NonNull;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.example.healthcare_management_v2.dto.userDto.UpdateUserDto;
 import org.example.healthcare_management_v2.dto.userDto.UserUpdateDto;
@@ -59,7 +60,6 @@ public class UserServiceImpl implements UserService {
         return userPage.map(userMapper::userToUserWithDoctorDto);
     }
 
-
     @Override
     public void checkUsernameExistence(String username) {
         userRepository.findByUsername(username).ifPresent(u -> {
@@ -72,14 +72,22 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User validateOwnership(Long userId) {
+        // Kiểm tra xem người dùng hiện tại có phải là người sở hữu tài khoản không
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String currentUsername = authentication.getName();
 
-        User currentUser = userRepository.findByUsername(currentUsername)
-                .orElseThrow(() -> new UsernameNotFoundException("User not found: " + currentUsername));
+        // Kiểm tra xem người dùng có vai trò admin
+        boolean isAdmin = authentication.getAuthorities().stream()
+                .anyMatch(authority -> authority.getAuthority().equals("ROLE_ADMIN"));
 
-        if (isPatientOnly(currentUser) && !currentUser.getId().equals(userId)) {
-            throw new AccessDeniedException("You can only action your own profile");
+        // lấy ra user theo id
+        User currentUser = userRepository.findById(userId)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found with id: " + userId));
+
+        // chỉ admin hoặc người dùng hiện tại mới có thể cập nhật ảnh đại diện
+        if (!currentUsername.equals(currentUser.getUsername()) && !isAdmin)
+        {
+            throw new RuntimeException("You can update your own profile");
         }
 
         return currentUser;
@@ -124,6 +132,7 @@ public class UserServiceImpl implements UserService {
         userRepository.save(oldUser);
     }
 
+    @Transactional
     @Override
     public void updateProfilev2(UserUpdateDto userDto) {
         User oldUser = validateOwnership(userDto.getId());
