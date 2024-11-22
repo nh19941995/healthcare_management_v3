@@ -1,13 +1,12 @@
 package org.example.healthcare_management_v2.entities;
 
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.*;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Table;
 import lombok.*;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.SQLDelete;
-import org.hibernate.annotations.SQLRestriction;
-import org.hibernate.annotations.UpdateTimestamp;
+import org.hibernate.annotations.*;
 
 import java.time.LocalDateTime;
 import java.util.HashSet;
@@ -55,7 +54,6 @@ public class Clinic { // phòng khám
 
     @ToString.Exclude
     // mappedBy trỏ tới tên biến clinic trong entity Doctor
-
     @OneToMany(
             mappedBy = "clinic",
             cascade = {

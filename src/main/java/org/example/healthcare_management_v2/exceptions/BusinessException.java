@@ -14,4 +14,7 @@ public class BusinessException extends RuntimeException {
         this.details = details;
         this.status = status;
     }
+
+    // cách gọi
+    // throw new BusinessException("message", "details", HttpStatus.BAD_REQUEST);
 }

@@ -73,7 +73,7 @@ public class Doctor {
     }, fetch = FetchType.LAZY)
     private Set<Appointment> appointments = new HashSet<>();
 
-    @ToString.Exclude
+//    @ToString.Exclude
     @ManyToOne(fetch = FetchType.EAGER)
     // tên cột chứa khóa phụ trong bảng doctors là clinic_id
     // cột phụ clinic_id sẽ dc thêm vào bảng doctors

@@ -9,15 +9,18 @@ import org.example.healthcare_management_v2.entities.Doctor;
 import org.example.healthcare_management_v2.entities.TimeSlot;
 import org.example.healthcare_management_v2.entities.User;
 import org.example.healthcare_management_v2.enums.AppointmentsStatus;
+import org.example.healthcare_management_v2.exceptions.BusinessException;
 import org.example.healthcare_management_v2.map.AppointmentMapper;
 import org.example.healthcare_management_v2.repositories.AppointmentRepo;
 import org.example.healthcare_management_v2.repositories.TimeSlotRepo;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -34,6 +37,8 @@ public class AppointmentServiceImpl implements AppointmentService {
     @Override
     public AppointmentDto createAppointment(
             String patient_username, String doctor_username, Long timeSlot_id, String appointmentDate) {
+        if (Objects.equals(patient_username, doctor_username))
+            throw new BusinessException("message", "You can't create appointment for yourself", HttpStatus.BAD_REQUEST);
         // kiểm tra xem có ai đặt hẹn vào thời gian này chưa
         ckeckAppointment(doctor_username, timeSlot_id, appointmentDate);
          // bắt đầu tạo cuộc hẹn
